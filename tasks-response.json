@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "title": "Learn Node.js",
+    "completed": false,
+    "priority": "high",
+    "createdAt": "2025-11-04T18:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "title": "Build REST API",
+    "completed": false,
+    "priority": "medium",
+    "createdAt": "2025-11-04T18:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "title": "Test API with Postman",
+    "completed": true,
+    "priority": "low",
+    "createdAt": "2025-11-04T18:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "title": "Add routes and error handling",
+    "completed": false,
+    "priority": "medium",
+    "createdAt": "2025-11-04T18:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "title": "Write README and finalize lab",
+    "completed": false,
+    "priority": "high",
+    "createdAt": "2025-11-04T18:00:00.000Z"
+  }
+]
