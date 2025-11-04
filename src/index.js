@@ -1,46 +1,23 @@
 const express = require('express');
 const app = express();
-const port = 3002;
+const port = 3000;
 
-// Sample task data
-const tasks = [
-  { id: 1, title: 'Learn Node.js', completed: false, priority: 'high', createdAt: new Date() },
-  { id: 2, title: 'Build REST API', completed: false, priority: 'medium', createdAt: new Date() },
-  { id: 3, title: 'Write Documentation', completed: false, priority: 'low', createdAt: new Date() },
-  { id: 4, title: 'Test with Postman', completed: false, priority: 'medium', createdAt: new Date() },
-  { id: 5, title: 'Commit to Git', completed: true, priority: 'high', createdAt: new Date() },
-];
+// Import task routes
+const tasksRouter = require('./routes/tasks');
 
+// Root route
 app.get('/', (req, res) => {
   res.send('Task Management API is running!');
 });
 
-// GET /tasks
-app.get('/tasks', (req, res) => {
-  res.json(tasks);
-});
-
-// GET /health
+// Health route
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', uptime: process.uptime() });
 });
 
-// GET /task/:id
-app.get('/task/:id', (req, res) => {
-  const id = Number(req.params.id);
-
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'Invalid ID format' });
-  }
-
-  const task = tasks.find(t => t.id === id);
-  if (!task) {
-    return res.status(404).json({ error: 'Task not found' });
-  }
-
-  res.json(task);
-});
+// Use tasks router
+app.use('/tasks', tasksRouter);
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`✅ Server running at http://localhost:${port}`);
 });
