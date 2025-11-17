@@ -1,0 +1,31 @@
+=== GET / ===
+Response:
+Task Management API is running!
+
+=== GET /health ===
+{
+  "status": "healthy",
+  "uptime": 13.242
+}
+
+=== GET /tasks ===
+[ { ...5 tasks as in tasks-response.json... } ]
+
+=== GET /tasks/2 ===
+{
+  "id": 2,
+  "title": "Build REST API",
+  "completed": false,
+  "priority": "medium",
+  "createdAt": "2025-11-04T18:00:00.000Z"
+}
+
+=== GET /tasks/999 ===
+{
+  "error": "Task not found"
+}
+
+=== GET /tasks/abc ===
+{
+  "error": "Invalid ID format"
+}
