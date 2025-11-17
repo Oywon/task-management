@@ -1,32 +1,48 @@
 const express = require('express');
 const router = express.Router();
 
-const tasks = [
-  { id: 1, title: 'Learn Node.js', completed: false, priority: 'high', createdAt: new Date() },
-  { id: 2, title: 'Build REST API', completed: false, priority: 'medium', createdAt: new Date() },
-  { id: 3, title: 'Test API with Postman', completed: true, priority: 'low', createdAt: new Date() },
-  { id: 4, title: 'Add routes and error handling', completed: false, priority: 'medium', createdAt: new Date() },
-  { id: 5, title: 'Write README and finalize lab', completed: false, priority: 'high', createdAt: new Date() }
-];
-
-// GET /tasks → return all tasks
+// GET /tasks - Retrieve all tasks
 router.get('/', (req, res) => {
-  res.json(tasks);
+  const tasks = req.app.locals.tasks;
+
+  res.status(200).json({
+    success: true,
+    data: tasks
+  });
 });
 
-// GET /tasks/:id → return a specific task
-router.get('/:id', (req, res) => {
-  const id = Number(req.params.id);
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'Invalid ID format' });
-  }
+// POST /tasks - Create a new task
+router.post('/', (req, res) => {
+  try {
+    const { title } = req.body;
 
-  const task = tasks.find(t => t.id === id);
-  if (!task) {
-    return res.status(404).json({ error: 'Task not found' });
-  }
+    // Validate title
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title is required and must be a non-empty string'
+      });
+    }
 
-  res.json(task);
+    const newTask = {
+      id: Date.now(),        // temporary unique ID
+      title: title.trim(),
+      completed: false
+    };
+
+    const tasks = req.app.locals.tasks;
+    tasks.push(newTask);
+
+    res.status(201).json({
+      success: true,
+      data: newTask
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
 });
 
 module.exports = router;

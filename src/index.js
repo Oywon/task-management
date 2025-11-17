@@ -1,23 +1,41 @@
 const express = require('express');
+const taskRouter = require('./routes/tasks');
+
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Import task routes
-const tasksRouter = require('./routes/tasks');
+// In-memory task storage (will be replaced in later labs)
+const tasks = [
+  { id: 1, title: 'Sample Task', completed: false }
+];
+app.locals.tasks = tasks; // share with routes
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Task Management API is running!');
+// -------- Middleware --------
+app.use(express.json()); // Parse JSON request bodies
+
+// -------- Routes --------
+app.use('/tasks', taskRouter);
+
+// Handle invalid JSON (SyntaxError from express.json)
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
+  next(err);
 });
 
-// Health route
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', uptime: process.uptime() });
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Not Found'
+  });
 });
 
-// Use tasks router
-app.use('/tasks', tasksRouter);
-
-app.listen(port, () => {
-  console.log(`✅ Server running at http://localhost:${port}`);
+// -------- Start Server --------
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
