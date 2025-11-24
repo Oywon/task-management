@@ -1,75 +1,64 @@
 const express = require('express');
-const taskRouter = require('./routes/tasks');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
-// In-memory task storage (will be replaced in later labs)
 const tasks = [
-  {
-    id: 1,
-    title: "Complete REST API Lab",
+  { 
+    id: 1, 
+    title: 'Complete lab assignment', 
     completed: false,
-    priority: "high",
-    createdAt: new Date()
+    priority: 'high',
+    createdAt: new Date('2025-11-10')
   },
-  {
-    id: 2,
-    title: "Review Express Middleware",
+  { 
+    id: 2, 
+    title: 'Study for midterm', 
     completed: true,
-    priority: "medium",
-    createdAt: new Date()
+    priority: 'medium',
+    createdAt: new Date('2025-11-12')
   },
-  {
-    id: 3,
-    title: "Write Postman Tests",
+  { 
+    id: 3, 
+    title: 'Build portfolio website', 
     completed: false,
-    priority: "low",
-    createdAt: new Date()
+    priority: 'low',
+    createdAt: new Date('2025-11-14')
   },
-  {
-    id: 4,
-    title: "Update tasks.js route",
+  { 
+    id: 4, 
+    title: 'Practice REST APIs', 
     completed: false,
-    priority: "high",
-    createdAt: new Date()
+    priority: 'high',
+    createdAt: new Date('2025-11-15')
   },
-  {
-    id: 5,
-    title: "Submit LAB 02 Assignment",
-    completed: false,
-    priority: "medium",
-    createdAt: new Date()
+  { 
+    id: 5, 
+    title: 'Read documentation', 
+    completed: true,
+    priority: 'medium',
+    createdAt: new Date('2025-11-16')
   }
 ];
+
 app.locals.tasks = tasks;
 
-// -------- Middleware --------
-app.use(express.json()); // Parse JSON request bodies
+app.use(express.json());
 
-// -------- Routes --------
-app.use('/tasks', taskRouter);
+const tasksRouter = require('./routes/tasks');
 
-// Handle invalid JSON (SyntaxError from express.json)
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    return res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-  next(err);
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Not Found'
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    uptime: process.uptime()
   });
 });
 
-// -------- Start Server --------
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.use('/tasks', tasksRouter);
+
+app.get('/', (req, res) => {
+  res.send('Task Manager API');
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
